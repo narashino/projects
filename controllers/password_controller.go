@@ -47,9 +47,18 @@ type PasswordReconciler struct {
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.12.1/pkg/reconcile
 func (r *PasswordReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	_ = log.FromContext(ctx)
+	logger := log.FromContext(ctx)
 
-	// TODO(user): your logic here
+	logger.Info("Reconcile is called.")
+
+	// Fetch Password object
+	var password secretv1alpha1.Password
+	if err := r.Get(ctx, req.NamespacedName, &password); err != nil {
+		logger.Error(err, "Fetch Password object - failed")
+		return ctrl.Result{}, client.IgnoreNotFound(err)
+	}
+
+	logger.Info("Fetch Password object - succeeded", "password", password.Name, "createdAt", password.CreationTimestamp)
 
 	return ctrl.Result{}, nil
 }
