@@ -25,15 +25,41 @@ import (
 
 // PasswordSpec defines the desired state of Password
 type PasswordSpec struct {
-	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
+	//+kubebuilder:validation:Minimum=8
+	//+kubebuilder:default:=20
+	//+kubebuilder:validation:Required
+	Length int `json:"length"`
 
+	//+kubebuilder:validation:Minimum=0
+	//+kubebuilder:default:=10
+	//+kubebuilder:validation:Optional
+	Digit int `json:"digit"`
+
+	//+kubebuilder:validation:Minimum=0
+	//+kubebuilder:default:=10
+	//+kubebuilder:validation:Optional
+	Symbol int `json:"symbol"`
+
+	//+kubebuilder:default:=false
+	//+kubebuilder:validation:Optional
+	CaseSensitive bool `json:"caseSensitive"`
+	//+kubebuilder:default:=false
+	//+kubebuilder:validation:Optional
+	DisallowRepeat bool `json:"disallowRepeat"`
 }
+
+type PasswordState string
+
+const (
+	PasswordInSync PasswordState = "InSync"
+	PasswordFailed PasswordState = "Failed"
+)
 
 // PasswordStatus defines the observed state of Password
 type PasswordStatus struct {
-	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
+
+	// Information about if Password is in-sync.
+	State PasswordState `json:"state,omitempty"` // in-sync, failed
 }
 
 //+kubebuilder:object:root=true
